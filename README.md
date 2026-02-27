@@ -4,7 +4,7 @@ Sistema de limpeza corporativa para Windows: limpeza local, memória RAM, execu�
 
 ## Requisitos
 
-- **Node.js** 18+
+- **Node.js**
 - **Windows** (PowerShell para scripts de limpeza)
 - Para **agendamento**: executar como administrador
 - Para **limpeza em rede**: PowerShell Remoting habilitado nas máquinas de destino
