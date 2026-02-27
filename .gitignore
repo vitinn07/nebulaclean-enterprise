@@ -1,0 +1,38 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente (senhas, segredos)
+.env
+.env.local
+.env.*.local
+
+# Dados locais (usuários e agendamento – cada ambiente tem o seu)
+server/data/
+
+# Logs gerados pela aplicação
+logs/*.log
+logs/cleaning/
+
+# Manter pasta logs (estrutura)
+!logs/.gitkeep
+
+# Windows
+Thumbs.db
+Desktop.ini
+*.tmp
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / cache (se no futuro tiver)
+dist/
+build/
+.cache/

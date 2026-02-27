@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NebulaClean Enterprise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="app-root">
+      <!-- Tela de login -->
+      <div id="login-screen" class="screen active">
+        <div class="login-card glass">
+          <div class="logo">
+            <div class="logo-icon">NC</div>
+            <div class="logo-text">
+              <span class="logo-title">NebulaClean</span>
+              <span class="logo-subtitle">Enterprise</span>
+            </div>
+          </div>
+          <form id="login-form" class="login-form">
+            <div class="field">
+              <label for="login-username">Usuário</label>
+              <input type="text" id="login-username" name="username" autocomplete="username" required minlength="3" />
+            </div>
+            <div class="field">
+              <label for="login-password">Senha</label>
+              <input type="password" id="login-password" name="password" autocomplete="current-password" required minlength="6" />
+            </div>
+            <p id="login-error" class="form-error" aria-live="polite"></p>
+            <button type="submit" id="login-btn" class="primary-btn full">Entrar</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- App autenticado: dashboard + admin -->
+      <div id="app-screen" class="screen">
+        <aside class="sidebar glass">
+          <div class="logo">
+            <div class="logo-icon">NC</div>
+            <div class="logo-text">
+              <span class="logo-title">NebulaClean</span>
+              <span class="logo-subtitle">Enterprise</span>
+            </div>
+          </div>
+          <nav class="menu">
+            <button type="button" class="menu-item active" data-view="dashboard">
+              <span class="menu-icon">📊</span>
+              <span>Dashboard</span>
+            </button>
+            <button type="button" class="menu-item" data-view="logs">
+              <span class="menu-icon">📜</span>
+              <span>Logs</span>
+            </button>
+            <button type="button" class="menu-item" data-view="schedule">
+              <span class="menu-icon">🕐</span>
+              <span>Agendamento</span>
+            </button>
+            <button type="button" class="menu-item menu-admin" data-view="network" style="display: none;">
+              <span class="menu-icon">🌐</span>
+              <span>Rede</span>
+            </button>
+            <button type="button" class="menu-item menu-admin" data-view="admin" style="display: none;">
+              <span class="menu-icon">👤</span>
+              <span>Usuários</span>
+            </button>
+          </nav>
+          <div class="sidebar-footer">
+            <div class="user-pill">
+              <span id="sidebar-username">--</span>
+              <span id="sidebar-role" class="badge">--</span>
+            </div>
+            <button type="button" id="logout-btn" class="ghost-btn small">Sair</button>
+          </div>
+        </aside>
+        <main class="main">
+          <header class="topbar">
+            <h1 id="page-title">Dashboard</h1>
+          </header>
+          <section id="view-dashboard" class="view active">
+            <div class="card glass">
+              <h2>Bem-vindo</h2>
+              <p id="welcome-msg">Carregando...</p>
+            </div>
+            <div class="card glass">
+              <h2>Limpeza local</h2>
+              <p class="hint">Pastas temporárias, cleanmgr, DNS, Lixeira, DISM.</p>
+              <label class="checkbox-row"><input type="checkbox" id="local-simulation" checked /> Simulação (apenas estimativa)</label>
+              <label class="checkbox-row"><input type="checkbox" id="local-cleanmgr" /> Executar cleanmgr</label>
+              <label class="checkbox-row"><input type="checkbox" id="local-flushdns" checked /> Limpar cache DNS</label>
+              <label class="checkbox-row"><input type="checkbox" id="local-recycle" /> Esvaziar Lixeira</label>
+              <label class="checkbox-row"><input type="checkbox" id="local-dism" /> DISM StartComponentCleanup</label>
+              <button type="button" id="btn-local-clean" class="primary-btn">Executar limpeza local</button>
+              <p id="local-result" class="result-msg"></p>
+            </div>
+            <div class="card glass">
+              <h2>Limpeza de memória RAM</h2>
+              <p class="hint">GC, reiniciar Explorer, limpar DNS.</p>
+              <label class="checkbox-row"><input type="checkbox" id="mem-gc" checked /> Coletar GC</label>
+              <label class="checkbox-row"><input type="checkbox" id="mem-explorer" /> Reiniciar Explorer</label>
+              <label class="checkbox-row"><input type="checkbox" id="mem-flushdns" checked /> Limpar DNS</label>
+              <button type="button" id="btn-memory-clean" class="primary-btn">Executar limpeza de memória</button>
+              <p id="memory-result" class="result-msg"></p>
+            </div>
+          </section>
+          <section id="view-logs" class="view">
+            <div class="card glass">
+              <div class="card-header">
+                <h2>Logs</h2>
+                <button type="button" id="btn-refresh-logs" class="ghost-btn small">Atualizar</button>
+              </div>
+              <div id="logs-list" class="logs-list"></div>
+              <pre id="log-content" class="log-content"></pre>
+            </div>
+          </section>
+          <section id="view-schedule" class="view">
+            <div class="card glass">
+              <h2>Agendamento semanal</h2>
+              <p class="hint">Requer execução como administrador para criar a tarefa no Windows.</p>
+              <label class="checkbox-row"><input type="checkbox" id="schedule-enabled" /> Ativar agendamento</label>
+              <div class="field">
+                <label for="schedule-day">Dia da semana</label>
+                <select id="schedule-day">
+                  <option value="0">Domingo</option>
+                  <option value="1" selected>Segunda</option>
+                  <option value="2">Terça</option>
+                  <option value="3">Quarta</option>
+                  <option value="4">Quinta</option>
+                  <option value="5">Sexta</option>
+                  <option value="6">Sábado</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="schedule-time">Horário</label>
+                <input type="time" id="schedule-time" value="03:00" />
+              </div>
+              <button type="button" id="btn-save-schedule" class="primary-btn">Salvar agendamento</button>
+              <p id="schedule-result" class="result-msg"></p>
+            </div>
+          </section>
+          <section id="view-network" class="view">
+            <div class="card glass">
+              <h2>Executar limpeza na rede</h2>
+              <p class="hint">Requer PowerShell Remoting habilitado nas máquinas de destino.</p>
+              <button type="button" id="btn-discover" class="ghost-btn">Descobrir máquinas</button>
+              <div id="network-machines" class="network-machines"></div>
+              <button type="button" id="btn-network-run" class="primary-btn" style="margin-top: 12px;">Executar limpeza na rede</button>
+              <p id="network-result" class="result-msg"></p>
+            </div>
+          </section>
+          <section id="view-admin" class="view">
+            <div class="card glass">
+              <div class="card-header">
+                <h2>Usuários</h2>
+                <button type="button" id="btn-new-user" class="primary-btn small">Novo usuário</button>
+              </div>
+              <div id="users-list" class="users-list"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal novo usuário -->
+    <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
+      <div class="modal glass">
+        <div class="modal-header">
+          <h2>Novo usuário</h2>
+          <button type="button" id="modal-close" class="ghost-btn small" aria-label="Fechar">&times;</button>
+        </div>
+        <form id="form-new-user">
+          <div class="field">
+            <label for="new-username">Usuário</label>
+            <input type="text" id="new-username" name="username" required minlength="3" maxlength="64" />
+          </div>
+          <div class="field">
+            <label for="new-password">Senha</label>
+            <input type="password" id="new-password" name="password" required minlength="8" maxlength="128" />
+          </div>
+          <div class="field">
+            <label for="new-role">Perfil</label>
+            <select id="new-role" name="role">
+              <option value="USER">Usuário</option>
+              <option value="ADMIN">Administrador</option>
+            </select>
+          </div>
+          <p id="new-user-error" class="form-error"></p>
+          <div class="modal-actions">
+            <button type="button" id="modal-cancel" class="ghost-btn">Cancelar</button>
+            <button type="submit" class="primary-btn">Criar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

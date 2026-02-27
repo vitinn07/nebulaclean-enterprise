@@ -1,0 +1,52 @@
+{
+  "SimulationMode": true,
+  "Targets": [
+    {
+      "Id": "TempUser",
+      "Name": "%TEMP%",
+      "Path": "%TEMP%",
+      "RequiresAdmin": false,
+      "Enabled": true
+    },
+    {
+      "Id": "WindowsTemp",
+      "Name": "C:\\Windows\\Temp",
+      "Path": "C:\\Windows\\Temp",
+      "RequiresAdmin": true,
+      "Enabled": true
+    },
+    {
+      "Id": "LocalAppDataTemp",
+      "Name": "%AppData%\\Local\\Temp",
+      "Path": "%LOCALAPPDATA%\\Temp",
+      "RequiresAdmin": false,
+      "Enabled": true
+    },
+    {
+      "Id": "Prefetch",
+      "Name": "C:\\Windows\\Prefetch",
+      "Path": "C:\\Windows\\Prefetch",
+      "RequiresAdmin": true,
+      "Enabled": true,
+      "Policy": {
+        "Mode": "OlderThanDays",
+        "Days": 7,
+        "ExcludeFiles": [
+          "Layout.ini"
+        ]
+      }
+    },
+    {
+      "Id": "SoftwareDistribution",
+      "Name": "SoftwareDistribution\\Download",
+      "Path": "C:\\Windows\\SoftwareDistribution\\Download",
+      "RequiresAdmin": true,
+      "Enabled": true
+    }
+  ],
+  "Schedule": {
+    "Enabled": false,
+    "Time": "03:00"
+  }
+}
+
