@@ -376,14 +376,17 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || data.details?.[0] || 'Falha no login');
         setAuth(data.token, data.user);
         showScreen('app');
         renderAppWithUser(data.user);
         showToast('Login realizado.');
       } catch (err) {
-        errEl.textContent = err.message || 'Erro ao entrar.';
+        const isNetwork = err.message === 'Failed to fetch' || err.name === 'TypeError';
+        errEl.textContent = isNetwork
+          ? 'Não foi possível conectar ao servidor. Inicie com "npm start" e acesse por http://localhost:3000'
+          : (err.message || 'Erro ao entrar.');
       } finally {
         btn.disabled = false;
       }

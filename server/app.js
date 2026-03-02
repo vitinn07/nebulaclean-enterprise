@@ -50,15 +50,11 @@ app.use(errorHandler);
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 
-ensureAdminUser().catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error('[NebulaClean] Falha ao garantir usuário ADMIN inicial:', err);
-});
-
 function startServer(port) {
   const server = app.listen(port, HOST, () => {
+    const urlLocal = HOST === '0.0.0.0' ? `http://localhost:${port}` : `http://${HOST}:${port}`;
     // eslint-disable-next-line no-console
-    console.log(`NebulaClean Node server rodando em http://${HOST}:${port}`);
+    console.log(`NebulaClean Node server rodando. Acesse: ${urlLocal}`);
   });
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE' && port < 3010) {
@@ -69,7 +65,13 @@ function startServer(port) {
   });
 }
 
-startServer(PORT);
+ensureAdminUser()
+  .then(() => startServer(PORT))
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error('[NebulaClean] Falha ao garantir usuário ADMIN inicial:', err);
+    process.exit(1);
+  });
 
 module.exports = app;
 
