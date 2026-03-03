@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <title>NebulaClean Enterprise</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -35,6 +41,7 @@
 
       <!-- App autenticado: dashboard + admin -->
       <div id="app-screen" class="screen">
+        <div id="nav-overlay" class="nav-overlay"></div>
         <aside class="sidebar glass">
           <div class="logo">
             <div class="logo-icon">NC</div>
@@ -75,6 +82,16 @@
         </aside>
         <main class="main">
           <header class="topbar">
+            <button
+              type="button"
+              id="menu-toggle"
+              class="icon-button hamburger"
+              aria-label="Alternar navegação"
+            >
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+            </button>
             <h1 id="page-title">Dashboard</h1>
           </header>
           <section id="view-dashboard" class="view active">
@@ -110,14 +127,20 @@
                 <button type="button" id="btn-refresh-logs" class="ghost-btn small">Atualizar</button>
               </div>
               <div id="logs-list" class="logs-list"></div>
-              <pre id="log-content" class="log-content"></pre>
+              <div id="log-content" class="log-content"></div>
             </div>
           </section>
           <section id="view-schedule" class="view">
             <div class="card glass">
               <h2>Agendamento semanal</h2>
               <p class="hint">Requer execução como administrador para criar a tarefa no Windows.</p>
-              <label class="checkbox-row"><input type="checkbox" id="schedule-enabled" /> Ativar agendamento</label>
+              <label class="toggle-row">
+                <input type="checkbox" id="schedule-enabled" />
+                <span class="toggle-track">
+                  <span class="toggle-thumb"></span>
+                </span>
+                <span class="toggle-label">Ativar agendamento</span>
+              </label>
               <div class="field">
                 <label for="schedule-day">Dia da semana</label>
                 <select id="schedule-day">

@@ -76,6 +76,20 @@
   }
 
   const titles = { dashboard: 'Dashboard', logs: 'Logs', schedule: 'Agendamento', network: 'Rede', admin: 'Usuários' };
+
+  function setNavOpen(open) {
+    const body = document.body;
+    const btn = document.getElementById('menu-toggle');
+    if (!body) return;
+    if (open) {
+      body.classList.add('nav-open');
+      if (btn) btn.classList.add('is-open');
+    } else {
+      body.classList.remove('nav-open');
+      if (btn) btn.classList.remove('is-open');
+    }
+  }
+
   function switchView(viewId) {
     document.querySelectorAll('.menu-item').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.view === viewId);
@@ -124,6 +138,40 @@
     const div = document.createElement('div');
     div.textContent = s;
     return div.innerHTML;
+  }
+
+  function parseStructuredLogs(raw) {
+    if (!raw) return [];
+    const blocks = raw.split(/\n\s*\n/);
+    const entries = [];
+    blocks.forEach((b) => {
+      const block = b.trim();
+      if (!block) return;
+      const host = (block.match(/\[HOST:\s*([^\]]+)\]/i) || [])[1] || '';
+      const ip = (block.match(/\[IP:\s*([^\]]+)\]/i) || [])[1] || '';
+      const user = (block.match(/\[USER:\s*([^\]]+)\]/i) || [])[1] || '';
+      const date = (block.match(/\[DATA:\s*([^\]]+)\]/i) || [])[1] || '';
+      const time = (block.match(/\[HORA:\s*([^\]]+)\]/i) || [])[1] || '';
+      const status = (block.match(/\[STATUS:\s*([^\]]+)\]/i) || [])[1] || '';
+      const body = block
+        .replace(/\[HOST:[^\]]+\]\s*/i, '')
+        .replace(/\[IP:[^\]]+\]\s*/i, '')
+        .replace(/\[USER:[^\]]+\]\s*/i, '')
+        .replace(/\[DATA:[^\]]+\]\s*/i, '')
+        .replace(/\[HORA:[^\]]+\]\s*/i, '')
+        .replace(/\[STATUS:[^\]]+\]\s*/i, '')
+        .trim();
+      entries.push({
+        host,
+        ip,
+        user,
+        date,
+        time,
+        status,
+        body
+      });
+    });
+    return entries;
   }
 
   async function deleteUser(id, username) {
@@ -182,7 +230,45 @@
         return;
       }
       const text = await res.text();
-      contentEl.textContent = text || '(vazio)';
+      const entries = parseStructuredLogs(text);
+      if (!entries.length) {
+        contentEl.textContent = text || '(vazio)';
+        return;
+      }
+      contentEl.innerHTML = entries
+        .map(function (e) {
+          const statusLower = (e.status || '').toLowerCase();
+          const isError = statusLower.indexOf('erro') >= 0 || statusLower.indexOf('fail') >= 0;
+          const statusClass = isError ? 'log-entry-status-error' : 'log-entry-status-ok';
+          return (
+            '<article class="log-entry ' +
+            statusClass +
+            '">' +
+            '<header class="log-entry-header">' +
+            (e.host
+              ? '<span class="log-tag log-tag-host">' + escapeHtml(e.host) + '</span>'
+              : '') +
+            (e.ip ? '<span class="log-tag log-tag-ip">' + escapeHtml(e.ip) + '</span>' : '') +
+            (e.user
+              ? '<span class="log-tag log-tag-user" title="Usuário">' + escapeHtml(e.user) + '</span>'
+              : '') +
+            (e.status
+              ? '<span class="log-tag log-tag-status">' + escapeHtml(e.status) + '</span>'
+              : '') +
+            '</header>' +
+            (e.date || e.time
+              ? '<div class="log-entry-meta">' +
+                (e.date ? '<span>' + escapeHtml(e.date) + '</span>' : '') +
+                (e.time ? '<span>' + escapeHtml(e.time) + '</span>' : '') +
+                '</div>'
+              : '') +
+            (e.body
+              ? '<div class="log-entry-body">' + escapeHtml(e.body) + '</div>'
+              : '<div class="log-entry-body log-entry-body-empty">(sem detalhes)</div>') +
+            '</article>'
+          );
+        })
+        .join('');
     } catch (err) {
       contentEl.textContent = err.message || 'Erro ao carregar.';
     }
@@ -403,8 +489,21 @@
         const view = btn.dataset.view;
         if (view === 'admin') loadUsersList();
         switchView(view);
+        setNavOpen(false);
       });
     });
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const navOverlay = document.getElementById('nav-overlay');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        const open = !document.body.classList.contains('nav-open');
+        setNavOpen(open);
+      });
+    }
+    if (navOverlay) {
+      navOverlay.addEventListener('click', () => setNavOpen(false));
+    }
 
     document.getElementById('btn-refresh-logs')?.addEventListener('click', loadLogs);
     document.getElementById('btn-local-clean')?.addEventListener('click', runLocalClean);
