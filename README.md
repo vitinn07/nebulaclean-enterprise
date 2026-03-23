@@ -1,39 +1,80 @@
 # NebulaClean Enterprise
 
-Sistema de limpeza corporativa para Windows: limpeza local, memória RAM, execução remota em rede, multiusuário (admin/usuário), logs e agendamento semanal.
+Enterprise-grade solution for automated maintenance and optimization of Windows environments.
 
-## Requisitos
+---
 
-- **Node.js**
-- **Windows** (PowerShell para scripts de limpeza)
-- Para **agendamento**: executar como administrador
-- Para **limpeza em rede**: PowerShell Remoting habilitado nas máquinas de destino
+## Overview
 
-## Como rodar
+NebulaClean Enterprise is designed to standardize and automate system maintenance across multiple machines in corporate environments.
+It centralizes execution, reduces manual intervention, and ensures consistent operational performance through controlled routines and scheduling.
 
-```bash
-# Instalar dependências (uma vez)
-npm install
+---
 
-# Iniciar o servidor
-npm start
-```
+## Core Capabilities
 
-Acesse no navegador a URL exibida no terminal (ex.: http://localhost:3000).
+- Local system maintenance execution
+- Remote task execution across networked machines
+- Role-based access control
+- Structured logging for traceability
+- Scheduled task automation
 
-**Login padrão (criado na primeira execução):**
-- Usuário: `admin`
-- Senha: `ChangeMe!123`
+---
 
-Configure no `.env` (opcional): `PORT`, `HOST`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET`.
+## Requirements
 
-## Estrutura principal
+- Node.js
+- Windows environment
+- PowerShell enabled
 
-- `server/` – Backend Node.js (Express, JWT, rotas, serviços, scripts PowerShell)
-- `client/` – Interface web (login, dashboard, limpeza, logs, agendamento, admin)
-- `logs/` – Logs de execução (formato por máquina)
-- `config/` – Configurações (legado/engine antigo)
+For advanced operations:
+- Administrative privileges
+- PowerShell Remoting configured on target machines
 
-## Licença
+---
+
+## Setup
+
+npm install  
+npm start  
+
+The application will start in the local environment.
+
+---
+
+## Configuration
+
+Optional environment variables can be defined via `.env`:
+
+- Application host and port
+- Initial administrative credentials
+- Authentication secret
+
+---
+
+## Project Structure
+
+server/    Application backend and services  
+client/    Web interface  
+logs/      Execution logs  
+config/    Auxiliary configurations  
+
+---
+
+## Security Considerations
+
+- Authentication-based access control
+- Role separation for administrative operations
+- Remote execution depends on secure environment configuration
+
+---
+
+## Notes
+
+This project focuses on reliability, automation, and operational consistency in corporate IT environments.
+
+---
+
+## License
 
 MIT
